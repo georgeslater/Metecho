@@ -1,0 +1,1 @@
+yarn install --network-timeout 600000000
