@@ -1,1 +1,2 @@
-echo "Nothing to do here"
+yarn prod
+yarn django:serve:prod
