@@ -398,7 +398,7 @@ export const createSocket = ({
       if (lostConnection) {
         lostConnection = false;
         log('[WebSocket] reconnected');
-        opts.onreconnect(e);
+        //opts.onreconnect(e);
       } else {
         log('[WebSocket] connected');
         opts.onopen(e);
@@ -421,7 +421,7 @@ export const createSocket = ({
     onreconnect: () => {
       log('[WebSocket] attempting to reconnect…');
       if (!lostConnection) {
-        lostConnection = true;
+        //lostConnection = true;
       }
     },
     onmaximum: (e) => {
@@ -438,7 +438,7 @@ export const createSocket = ({
           }
         }, 5000);
       }
-      opts.onclose(e);
+      //opts.onclose(e);
     },
     onerror: (e) => {
       log('[WebSocket] error');
@@ -476,7 +476,7 @@ export const createSocket = ({
   };
 
   const reconnect = () => {
-    socket.close(1000, 'user logged out');
+    /* socket.close(1000, 'user logged out');
     // Without polling, the `onopen` callback after reconnect could fire before
     // the `onclose` callback...
     reconnecting = setInterval(() => {
@@ -484,7 +484,7 @@ export const createSocket = ({
         socket.open();
         clearReconnect();
       }
-    }, 500);
+    }, 500); */
   };
 
   return {
