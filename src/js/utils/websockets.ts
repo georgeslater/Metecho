@@ -429,6 +429,7 @@ export const createSocket = ({
       opts.onmaximum(e);
     },
     onclose: (e) => {
+      log(e);
       log('[WebSocket] closed');
       if (open) {
         open = false;
