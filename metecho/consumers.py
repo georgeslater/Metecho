@@ -1,6 +1,5 @@
 from copy import deepcopy
 from enum import Enum
-import logging
 
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
@@ -11,35 +10,47 @@ from django.utils.translation import gettext as _
 from .api.constants import CHANNELS_GROUP_NAME, LIST
 from .consumer_utils import clear_message_semaphore
 
-logger = logging.getLogger(__name__)
-
 KNOWN_MODELS = {"user", "project", "epic", "task", "scratchorg"}
 
+def debuggable_function_decorator(func):
+    from functools import wraps
+    import traceback
+
+    @wraps(func)
+    def wrapper(*arg, **kwargs):
+        try:
+            return func(*arg, **kwargs)
+        except Exception as exc:
+            print(traceback.format_exc())
+            raise
+
+    return wrapper
+
+def debuggable_class_decorator(cls):
+    for attr, value in vars(cls).items():
+        if callable(value):
+            setattr(cls, attr, debuggable_function_decorator(value))
+
+    return cls
 
 class Actions(Enum):
     Subscribe = "SUBSCRIBE"
     Unsubscribe = "UNSUBSCRIBE"
 
+class debugmeta(type):
+    def __new__(cls, clsname, bases, clsdict):
+        return debuggable_class_decorator(
+            super().__new__(cls, clsname, bases, clsdict)
+        )
 
-class PushNotificationConsumer(AsyncJsonWebsocketConsumer):
+class PushNotificationConsumer(metaclass=debugmeta, AsyncJsonWebsocketConsumer):
     """
     This is just a hint at a start; you will likely need to edit it heavily for your
     project's use case.
     """
 
     async def connect(self):
-        try:
-            logger.debug("$$$accepting...")
-            await self.accept()
-            logger.debug("$$$finished...")
-        except Exception as e:
-            tb = traceback.format_exc()
-            logger.error(tb)
-            raise
-
-    async def disconnect(self, close_code):
-        logger.debug("$$$disconnecting...")
-        logger.debug("$$$close code..." + close_code)
+        await self.accept()
 
     async def notify(self, event):
         """
