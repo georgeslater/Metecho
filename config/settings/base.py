@@ -145,7 +145,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "metecho.logging_middleware.LoggingMiddleware",
+    # "metecho.logging_middleware.LoggingMiddleware",
     #"sfdo_template_helpers.admin.middleware.AdminRestrictMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -442,66 +442,12 @@ GENERATE_REQUEST_ID_IF_NOT_IN_HEADER = True
 REQUEST_ID_RESPONSE_HEADER = "X-Request-ID"
 
 LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": True,
-    "filters": {
-        "request_id": {"()": "log_request_id.filters.RequestIDFilter"},
-        "job_id": {"()": "metecho.logfmt.JobIDFilter"},
-    },
-    "formatters": {
-        "logfmt": {
-            "()": "metecho.logfmt.LogfmtFormatter",
-            "format": (
-                "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d "
-                "%(message)s"
-            ),
-        },
-        "simple": {
-            "()": "django.utils.log.ServerFormatter",
-            "format": "{levelname} {message}",
-            "style": "{",
-        },
-    },
-    "handlers": {
-        "console_error": {
-            "level": "ERROR",
-            "class": "logging.StreamHandler",
-            "filters": ["request_id"],
-            "formatter": "simple",
-        },
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "filters": ["request_id"],
-            "formatter": "logfmt",
-        },
-        "rq_console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "filters": ["job_id"],
-            "formatter": "logfmt",
-        },
-    },
     "loggers": {
-        "django.db.backends": {
-            "level": "ERROR",
+        "": { # Root logger
             "handlers": ["console"],
-            "propagate": False,
-        },
-        "django.server": {"handlers": ["console"], "level": "INFO", "propagate": False},
-        "django.request": {
-            "handlers": ["console_error"],
             "level": "INFO",
-            "propagate": False,
-        },
-        "rq.worker": {"handlers": ["rq_console"], "level": "DEBUG"},
-        "metecho.oauth2": {"handlers": ["console"], "level": "DEBUG"},
-        "metecho.logging_middleware": {
-            "handlers": ["console"],
-            "level": "DEBUG",
-            "propagate": False,
-        },
-    },
+        }
+    }
 }
 
 API_PAGE_SIZE = env("API_PAGE_SIZE", type_=int, default=50)
