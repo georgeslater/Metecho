@@ -367,8 +367,8 @@ export const createSocket = ({
     return null;
   }
   const defaults = {
-    timeout: 20000,
-    maxAttempts: 5,
+    timeout: 1000,
+    maxAttempts: Infinity,
     /* eslint-disable @typescript-eslint/no-unused-vars */
     onopen: (e?: Event) => {},
     onmessage: (e?: Event) => {},
@@ -429,7 +429,6 @@ export const createSocket = ({
       opts.onmaximum(e);
     },
     onclose: (e) => {
-      log(e);
       log('[WebSocket] closed');
       if (open) {
         open = false;
@@ -437,7 +436,7 @@ export const createSocket = ({
           if (!open) {
             dispatch(disconnectSocket());
           }
-        }, 25000);
+        }, 5000);
       }
       opts.onclose(e);
     },
@@ -477,7 +476,7 @@ export const createSocket = ({
   };
 
   const reconnect = () => {
-    socket.close(5000, 'user logged out');
+    socket.close(1000, 'user logged out');
     // Without polling, the `onopen` callback after reconnect could fire before
     // the `onclose` callback...
     reconnecting = setInterval(() => {
@@ -485,7 +484,7 @@ export const createSocket = ({
         socket.open();
         clearReconnect();
       }
-    }, 2500);
+    }, 500);
   };
 
   return {
