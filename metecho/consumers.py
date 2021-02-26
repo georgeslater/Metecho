@@ -29,11 +29,17 @@ class PushNotificationConsumer(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
         try:
+            logger.debug("$$$accepting...")
             await self.accept()
+            logger.debug("$$$finished...")
         except Exception as e:
             tb = traceback.format_exc()
             logger.error(tb)
             raise
+
+    async def disconnect(self, close_code):
+        logger.debug("$$$disconnecting...")
+        logger.debug("$$$close code..." + close_code)
 
     async def notify(self, event):
         """
