@@ -35,11 +35,11 @@ class ProjectForm(forms.ModelForm):
         # Make sure we can access the repository
         try:
             gh.get_repo_info(None, repo_owner=repo_owner, repo_name=repo_name)
-        except Exception:
+        except Exception as e:
+            tb = traceback.format_exc()
             raise forms.ValidationError(
                 _(
-                    f"Could not access {repo_owner}/{repo_name} using GitHub app. "
-                    "Does the Metecho app need to be installed for this repository?"
+                    tb    
                 )
             )
 
