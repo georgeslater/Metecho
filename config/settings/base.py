@@ -145,7 +145,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    # "metecho.logging_middleware.LoggingMiddleware",
+    #"metecho.logging_middleware.LoggingMiddleware",
     #"sfdo_template_helpers.admin.middleware.AdminRestrictMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -442,12 +442,20 @@ GENERATE_REQUEST_ID_IF_NOT_IN_HEADER = True
 REQUEST_ID_RESPONSE_HEADER = "X-Request-ID"
 
 LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+        }
+    },
     "loggers": {
         "": { # Root logger
             "handlers": ["console"],
-            "level": "INFO",
+            "level": "INFO"
         }
-    }
+    },
 }
 
 API_PAGE_SIZE = env("API_PAGE_SIZE", type_=int, default=50)
