@@ -102,9 +102,12 @@ class User(HashIdMixin, AbstractUser):
         if not self.currently_fetching_repos:
             self.currently_fetching_repos = True
             self.save()
+            logger.debug('^^^about to call job!')
             refresh_github_repositories_for_user_job.delay(self)
+            logger.debug('^^^called job!')
 
     def refresh_repositories(self):
+        assert false
         try:
             repos = gh.get_all_org_repos(self)
             with transaction.atomic():
@@ -117,6 +120,9 @@ class User(HashIdMixin, AbstractUser):
                         for repo in repos
                     ]
                 )
+        except Exception as e:
+            logger.debug(e)
+            raise e
         finally:
             self.refresh_from_db()
             self.currently_fetching_repos = False

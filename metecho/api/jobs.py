@@ -516,7 +516,9 @@ delete_scratch_org_job = job(delete_scratch_org)
 
 
 def refresh_github_repositories_for_user(user):
+    logger.debug('^^^about to refresh repos!')
     user.refresh_repositories()
+    logger.debug('^^^refreshed repos!')
 
 
 refresh_github_repositories_for_user_job = job(refresh_github_repositories_for_user)
