@@ -1,5 +1,6 @@
 from copy import deepcopy
 from enum import Enum
+import logging
 
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
@@ -9,6 +10,8 @@ from django.utils.translation import gettext as _
 
 from .api.constants import CHANNELS_GROUP_NAME, LIST
 from .consumer_utils import clear_message_semaphore
+
+logger = logging.getLogger(__name__)
 
 KNOWN_MODELS = {"user", "project", "epic", "task", "scratchorg"}
 
@@ -25,7 +28,12 @@ class PushNotificationConsumer(AsyncJsonWebsocketConsumer):
     """
 
     async def connect(self):
-        await self.accept()
+        try:
+            await self.accept()
+        except Exception as e:
+            tb = traceback.format_exc()
+            logger.error(tb)
+            raise
 
     async def notify(self, event):
         """
