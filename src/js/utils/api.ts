@@ -41,7 +41,7 @@ const apiFetch = async ({
   url,
   dispatch,
   opts = {},
-  suppressErrorsOn = [404],
+  suppressErrorsOn = [],
   hasForm = false,
 }: {
   url: string;
@@ -60,6 +60,8 @@ const apiFetch = async ({
   try {
     const resp = await fetch(url, options);
     const { response, body } = await getResponse(resp);
+    console.log(response);
+    console.log(body);
     if (response.ok) {
       return body;
     }

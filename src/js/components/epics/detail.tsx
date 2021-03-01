@@ -189,6 +189,7 @@ const EpicDetail = (props: RouteComponentProps) => {
     [epic, updateEpicUsers, getRemovedUsers],
   );
   const doRefreshGitHubUsers = useCallback(() => {
+    console.log(project);
     /* istanbul ignore if */
     if (!project) {
       return;
